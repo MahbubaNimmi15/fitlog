@@ -1,294 +1,196 @@
 "use client";
 
 import Image from "next/image";
+import { ArrowLeft, Dumbbell } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import {
-  ArrowLeft,
-  Bookmark,
-  Clock,
-  Dumbbell,
-  Flame,
-  Plus,
-  Star,
-} from "lucide-react";
-import toast from "react-hot-toast";
 
-import { usePlan, type Workout } from "@/context/PlanContext";
-import LoadingSpinner from "@/components/LoadingSpinner";
 
-export default function WorkoutDetailsPage() {
-  const params = useParams();
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+const workouts = [
+  {
+    id: "1",
+    name: "Bicep Curl",
+    muscle: "Biceps",
+    equipment: "Dumbbell",
+    level: "Beginner",
+    duration: "15",
+    calories: "120",
+    image: "/banner.png",
+    description:
+      "A simple isolation exercise that builds bicep strength and arm size.",
+  },
 
-  const [workout, setWorkout] = useState<Workout | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  {
+    id: "2",
+    name: "Bench Press",
+    muscle: "Chest",
+    equipment: "Barbell",
+    level: "Intermediate",
+    duration: "25",
+    calories: "250",
+    image: "/banner.png",
+    description:
+      "A compound chest exercise focused on upper body strength.",
+  },
 
-  const { plan, saved, addToPlan, saveWorkout } = usePlan();
+  {
+    id: "3",
+    name: "Squat",
+    muscle: "Legs",
+    equipment: "Barbell",
+    level: "Advanced",
+    duration: "30",
+    calories: "300",
+    image: "/banner.png",
+    description:
+      "A powerful lower body movement for legs and core strength.",
+  },
+];
 
-  useEffect(() => {
-    if (!id) return;
 
-    async function getWorkout() {
-      try {
-        setLoading(true);
+export default async function WorkoutDetails({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
 
-        const response = await fetch(
-          `https://api.abcz.workers.dev/api/fitlog/${id}`
-        );
+  const { id } = await params;
 
-        if (!response.ok) {
-          throw new Error("Workout not found");
-        }
 
-        const data = await response.json();
+  const workout = workouts.find(
+    (item) => item.id === id
+  );
 
-        setWorkout(data.data ?? data);
-      } catch (error) {
-        console.error(error);
-        setError("Unable to load this workout.");
-      } finally {
-        setLoading(false);
-      }
-    }
 
-    getWorkout();
-  }, [id]);
-
-  if (loading) {
+  if (!workout) {
     return (
-      <main className="min-h-screen bg-[#0b0d0c]">
-        <LoadingSpinner />
-      </main>
-    );
-  }
-
-  if (error || !workout) {
-    return (
-      <main className="flex min-h-[70vh] flex-col items-center justify-center bg-[#0b0d0c] px-4 text-center">
-        <h1 className="text-3xl font-black uppercase text-white">
+      <main className="min-h-screen bg-[#0b0d0c] p-10 text-white">
+        <h1 className="text-3xl font-black">
           Workout Not Found
         </h1>
 
-        <p className="mt-3 text-gray-400">
-          {error || "This workout could not be found."}
-        </p>
-
         <Link
           href="/"
-          className="mt-6 rounded-md bg-[#ccff00] px-6 py-3 font-bold uppercase text-black"
+          className="mt-5 inline-block text-[#ccff00]"
         >
-          Back to Workouts
+          Go Back
         </Link>
       </main>
     );
   }
 
-  const alreadyInPlan = plan.some(
-    (item) => String(item.id) === String(workout.id)
-  );
-
-  const alreadySaved = saved.some(
-    (item) => String(item.id) === String(workout.id)
-  );
-
-  const planIsFull = plan.length >= 5;
-
-  const equipment =
-    typeof workout.equipment === "string"
-      ? workout.equipment
-      : workout.equipment?.join(", ") || "Not specified";
-
-  function handleAddToPlan() {
-    if (alreadyInPlan) {
-      toast.error("Already in today's plan");
-      return;
-    }
-
-    if (planIsFull) {
-      toast.error("Today's plan can contain maximum 5 workouts");
-      return;
-    }
-
-    const added = addToPlan(workout);
-
-    if (added) {
-      toast.success("Added to today's plan");
-    }
-  }
-
-  function handleSaveWorkout() {
-    if (alreadySaved) {
-      toast.error("Workout already saved");
-      return;
-    }
-
-    const savedSuccessfully = saveWorkout(workout);
-
-    if (savedSuccessfully) {
-      toast.success("Saved for later");
-    }
-  }
 
   return (
-    <main className="min-h-screen bg-[#0b0d0c] px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
+    <main className="min-h-screen bg-[#0b0d0c] px-4 py-16 text-white sm:px-6 lg:px-8">
+
+      <div className="mx-auto max-w-6xl">
+
+
         <Link
-          href="/#library"
-          className="mb-8 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-400 transition hover:text-[#ccff00]"
+          href="/"
+          className="flex items-center gap-2 text-sm text-gray-400 hover:text-[#ccff00]"
         >
-          <ArrowLeft size={17} />
-          Back to Library
+          <ArrowLeft size={16}/>
+          Back
         </Link>
 
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
-          <div className="relative min-h-[420px] overflow-hidden rounded-2xl border border-white/10 sm:min-h-[600px]">
+
+
+        <div className="mt-8 grid gap-10 lg:grid-cols-2">
+
+
+          <div className="relative h-[450px] overflow-hidden rounded-2xl border border-white/10 bg-[#151816]">
+
             <Image
               src={workout.image}
               alt={workout.name}
               fill
-              priority
               className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 50vw"
             />
+
           </div>
 
-          <div>
-            <div className="flex flex-wrap gap-2">
-              {workout.muscleGroups?.map((group) => (
-                <span
-                  key={group}
-                  className="rounded-full bg-[#ccff00] px-3 py-1 text-xs font-black uppercase text-black"
-                >
-                  {group}
-                </span>
-              ))}
-            </div>
 
-            <h1 className="mt-5 text-4xl font-black uppercase leading-tight text-white sm:text-5xl">
+
+          <div>
+
+            <p className="text-sm font-bold uppercase tracking-widest text-[#ccff00]">
+              {workout.level}
+            </p>
+
+
+            <h1 className="mt-3 text-5xl font-black uppercase">
               {workout.name}
             </h1>
 
-            <p className="mt-5 text-base leading-7 text-gray-400">
+
+            <p className="mt-5 text-gray-400">
               {workout.description}
             </p>
 
-            <div className="mt-8 overflow-hidden rounded-xl border border-white/10 bg-[#131614]">
-              <h2 className="border-b border-white/10 px-5 py-4 text-sm font-black uppercase tracking-wider text-[#ccff00]">
-                Key Specs
-              </h2>
 
-              <div className="divide-y divide-white/10">
-                <SpecRow label="Equipment" value={equipment} />
-                <SpecRow
-                  label="Difficulty"
-                  value={workout.difficulty || "Not specified"}
-                />
-                <SpecRow
-                  label="Sets"
-                  value={String(workout.sets ?? "Not specified")}
-                />
-                <SpecRow
-                  label="Reps"
-                  value={workout.reps || "Not specified"}
-                />
-                <SpecRow
-                  label="Duration"
-                  value={`${workout.duration} min`}
-                  icon={<Clock size={16} />}
-                />
-                <SpecRow
-                  label="Calories"
-                  value={`${workout.caloriesBurned} kcal`}
-                  icon={<Flame size={16} />}
-                />
-                <SpecRow
-                  label="Rating"
-                  value={String(workout.rating)}
-                  icon={<Star size={16} />}
-                />
+
+            <div className="mt-8 grid grid-cols-2 gap-4">
+
+
+              <div className="rounded-xl bg-[#151816] p-5">
+                <p className="text-sm text-gray-400">
+                  Muscle
+                </p>
+                <p className="mt-2 font-black">
+                  {workout.muscle}
+                </p>
               </div>
+
+
+              <div className="rounded-xl bg-[#151816] p-5">
+                <p className="text-sm text-gray-400">
+                  Equipment
+                </p>
+                <p className="mt-2 font-black">
+                  {workout.equipment}
+                </p>
+              </div>
+
+
+              <div className="rounded-xl bg-[#151816] p-5">
+                <p className="text-sm text-gray-400">
+                  Duration
+                </p>
+                <p className="mt-2 font-black">
+                  {workout.duration} min
+                </p>
+              </div>
+
+
+              <div className="rounded-xl bg-[#151816] p-5">
+                <p className="text-sm text-gray-400">
+                  Calories
+                </p>
+                <p className="mt-2 font-black">
+                  {workout.calories} kcal
+                </p>
+              </div>
+
+
             </div>
 
-            <div className="mt-8">
-              <h2 className="text-2xl font-black uppercase text-white">
-                Instructions
-              </h2>
 
-              <ol className="mt-5 space-y-4">
-                {workout.instructions?.map((instruction, index) => (
-                  <li
-                    key={index}
-                    className="flex gap-4 rounded-xl border border-white/10 bg-[#131614] p-4"
-                  >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#ccff00] text-sm font-black text-black">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
 
-                    <p className="pt-1 text-sm leading-6 text-gray-300">
-                      {instruction}
-                    </p>
-                  </li>
-                ))}
-              </ol>
-            </div>
+            <button
+              className="mt-8 flex w-full items-center justify-center gap-2 rounded-md bg-[#ccff00] py-4 font-black uppercase text-black"
+            >
+              <Dumbbell size={18}/>
+              Start Workout
+            </button>
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              <button
-                onClick={handleAddToPlan}
-                disabled={alreadyInPlan || planIsFull}
-                className="flex items-center justify-center gap-2 rounded-md bg-[#ccff00] px-5 py-4 text-sm font-black uppercase text-black transition hover:brightness-90 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                {alreadyInPlan ? (
-                  <>
-                    <Dumbbell size={18} />
-                    Added to Plan
-                  </>
-                ) : (
-                  <>
-                    <Plus size={18} />
-                    Add to Today&apos;s Plan
-                  </>
-                )}
-              </button>
 
-              <button
-                onClick={handleSaveWorkout}
-                disabled={alreadySaved}
-                className="flex items-center justify-center gap-2 rounded-md border border-white/20 bg-transparent px-5 py-4 text-sm font-black uppercase text-white transition hover:border-[#ccff00] hover:text-[#ccff00] disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <Bookmark size={18} />
-                {alreadySaved ? "Saved" : "Save for Later"}
-              </button>
-            </div>
           </div>
+
+
         </div>
+
       </div>
+
     </main>
-  );
-}
-
-function SpecRow({
-  label,
-  value,
-  icon,
-}: {
-  label: string;
-  value: string;
-  icon?: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4 px-5 py-4">
-      <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
-        {label}
-      </span>
-
-      <span className="flex items-center gap-2 text-right text-sm font-bold text-white">
-        {icon && <span className="text-[#ccff00]">{icon}</span>}
-        {value}
-      </span>
-    </div>
   );
 }
