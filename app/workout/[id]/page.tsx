@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowLeft, Dumbbell } from "lucide-react";
 import Link from "next/link";
+import { ArrowLeft, Dumbbell } from "lucide-react";
 
 
 const workouts = [
@@ -55,7 +55,6 @@ export default async function WorkoutDetails({
 
   const { id } = await params;
 
-
   const workout = workouts.find(
     (item) => item.id === id
   );
@@ -84,7 +83,6 @@ export default async function WorkoutDetails({
 
       <div className="mx-auto max-w-6xl">
 
-
         <Link
           href="/"
           className="flex items-center gap-2 text-sm text-gray-400 hover:text-[#ccff00]"
@@ -94,11 +92,10 @@ export default async function WorkoutDetails({
         </Link>
 
 
-
         <div className="mt-8 grid gap-10 lg:grid-cols-2">
 
 
-          <div className="relative h-[450px] overflow-hidden rounded-2xl border border-white/10 bg-[#151816]">
+          <div className="relative h-[450px] overflow-hidden rounded-2xl border border-white/10">
 
             <Image
               src={workout.image}
@@ -108,7 +105,6 @@ export default async function WorkoutDetails({
             />
 
           </div>
-
 
 
           <div>
@@ -128,14 +124,10 @@ export default async function WorkoutDetails({
             </p>
 
 
-
             <div className="mt-8 grid grid-cols-2 gap-4">
 
-
               <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-sm text-gray-400">
-                  Muscle
-                </p>
+                <p className="text-gray-400">Muscle</p>
                 <p className="mt-2 font-black">
                   {workout.muscle}
                 </p>
@@ -143,9 +135,7 @@ export default async function WorkoutDetails({
 
 
               <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-sm text-gray-400">
-                  Equipment
-                </p>
+                <p className="text-gray-400">Equipment</p>
                 <p className="mt-2 font-black">
                   {workout.equipment}
                 </p>
@@ -153,9 +143,7 @@ export default async function WorkoutDetails({
 
 
               <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-sm text-gray-400">
-                  Duration
-                </p>
+                <p className="text-gray-400">Duration</p>
                 <p className="mt-2 font-black">
                   {workout.duration} min
                 </p>
@@ -163,29 +151,22 @@ export default async function WorkoutDetails({
 
 
               <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-sm text-gray-400">
-                  Calories
-                </p>
+                <p className="text-gray-400">Calories</p>
                 <p className="mt-2 font-black">
                   {workout.calories} kcal
                 </p>
               </div>
 
-
             </div>
 
 
-
-            <button
-              className="mt-8 flex w-full items-center justify-center gap-2 rounded-md bg-[#ccff00] py-4 font-black uppercase text-black"
-            >
+            <button className="mt-8 flex w-full items-center justify-center gap-2 rounded-md bg-[#ccff00] py-4 font-black uppercase text-black">
               <Dumbbell size={18}/>
               Start Workout
             </button>
 
 
           </div>
-
 
         </div>
 

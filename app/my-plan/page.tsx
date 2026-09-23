@@ -27,7 +27,6 @@ export default function MyPlan() {
         </p>
 
 
-        {/* Plan Section */}
         <section className="mt-12">
 
           <h2 className="text-2xl font-black uppercase">
@@ -70,8 +69,11 @@ export default function MyPlan() {
                         : "bg-[#ccff00] text-black"
                       }`}
                     >
+
                       <Check size={15}/>
+
                       {item.isDone ? "Done" : "Complete"}
+
                     </button>
 
 
@@ -94,8 +96,6 @@ export default function MyPlan() {
         </section>
 
 
-
-        {/* Saved Section */}
 
         <section className="mt-16">
 
@@ -133,6 +133,7 @@ export default function MyPlan() {
                     Remove
                   </button>
 
+
                 </div>
 
               ))}
@@ -142,7 +143,6 @@ export default function MyPlan() {
           )}
 
         </section>
-
 
       </div>
 
