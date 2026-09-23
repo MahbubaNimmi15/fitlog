@@ -1,67 +1,80 @@
-import Image from "next/image";
-import Link from "next/link";
-import { Clock, Flame, Star } from "lucide-react";
-import type { Workout } from "@/context/PlanContext";
+"use client";
 
-type WorkoutCardProps = {
-  workout: Workout;
+import Link from "next/link";
+import { Bookmark, Dumbbell } from "lucide-react";
+import toast from "react-hot-toast";
+import { usePlan } from "@/context/PlanContext";
+
+type WorkoutProps = {
+  workout: {
+    id: string;
+    name: string;
+    muscle: string;
+    level: string;
+  };
 };
 
-export default function WorkoutCard({ workout }: WorkoutCardProps) {
+export default function WorkoutCard({ workout }: WorkoutProps) {
+  const { addPlan, saveWorkout } = usePlan();
+
+  const handlePlan = () => {
+    addPlan(workout);
+    toast.success("Added to plan");
+  };
+
+  const handleSave = () => {
+    saveWorkout(workout);
+    toast.success("Workout saved");
+  };
+
   return (
-    <Link
-      href={`/workout/${workout.id}`}
-      className="group overflow-hidden rounded-xl border border-white/10 bg-[#151816] transition duration-300 hover:-translate-y-1 hover:border-[#ccff00]/50"
-    >
-      <div className="relative h-64 w-full overflow-hidden">
-        <Image
-          src={workout.image}
-          alt={workout.name}
-          fill
-          className="object-cover transition duration-500 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
+    <div className="rounded-2xl border border-white/10 bg-[#111412] p-5 transition hover:-translate-y-1">
+
+      <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#ccff00]/10">
+        <Dumbbell className="text-[#ccff00]" />
       </div>
 
-      <div className="p-5">
-        <div className="mb-4 flex flex-wrap gap-2">
-          {workout.muscleGroups?.map((group) => (
-            <span
-              key={group}
-              className="rounded-full bg-[#ccff00] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-black"
-            >
-              {group}
-            </span>
-          ))}
-        </div>
+      <h3 className="text-xl font-black uppercase text-white">
+        {workout.name}
+      </h3>
 
-        <h3 className="text-xl font-black uppercase text-white">
-          {workout.name}
-        </h3>
+      <p className="mt-2 text-sm text-gray-400">
+        Muscle: {workout.muscle}
+      </p>
 
-        <p className="mt-2 text-sm text-gray-400">
-          {typeof workout.equipment === "string"
-            ? workout.equipment
-            : workout.equipment?.join(", ")}
-        </p>
+      <p className="mt-1 text-sm text-gray-400">
+        Level: {workout.level}
+      </p>
 
-        <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4 text-xs text-gray-300">
-          <div className="flex items-center gap-1.5">
-            <Clock size={15} className="text-[#ccff00]" />
-            <span>{workout.duration} min</span>
-          </div>
 
-          <div className="flex items-center gap-1.5">
-            <Flame size={15} className="text-[#ccff00]" />
-            <span>{workout.caloriesBurned} kcal</span>
-          </div>
+      <div className="mt-6 flex gap-3">
 
-          <div className="flex items-center gap-1.5">
-            <Star size={15} className="text-[#ccff00]" />
-            <span>{workout.rating}</span>
-          </div>
-        </div>
+        <button
+          onClick={handlePlan}
+          className="flex flex-1 items-center justify-center gap-2 rounded-md bg-[#ccff00] py-3 text-xs font-black uppercase text-black"
+        >
+          <Dumbbell size={15} />
+          Plan
+        </button>
+
+
+        <button
+          onClick={handleSave}
+          className="flex items-center justify-center rounded-md border border-white/20 px-4 text-white"
+        >
+          <Bookmark size={16} />
+        </button>
+
       </div>
-    </Link>
+
+
+      <Link
+        href={`/workout/${workout.id}`}
+        className="mt-4 block text-center text-xs font-bold uppercase text-gray-400 hover:text-[#ccff00]"
+      >
+        View Details
+      </Link>
+
+    </div>
   );
 }
