@@ -7,13 +7,28 @@ import {
   useState,
 } from "react";
 
+
 export type Workout = {
   id: string;
   name: string;
-  muscle: string;
-  level: string;
+
+  muscle?: string;
+  level?: string;
+
+  equipment?: string;
+  image?: string;
+
+  duration?: string;
+  caloriesBurned?: number;
+
+  calories?: string;
+  rating?: number;
+
+  category?: string[];
+
   isDone?: boolean;
 };
+
 
 type PlanContextType = {
   plan: Workout[];
@@ -31,7 +46,9 @@ type PlanContextType = {
   markAsDone: (id: string) => void;
 };
 
+
 const PlanContext = createContext<PlanContextType | null>(null);
+
 
 
 export function PlanProvider({
@@ -40,11 +57,12 @@ export function PlanProvider({
   children: React.ReactNode;
 }) {
 
+
   const [plan, setPlan] = useState<Workout[]>([]);
   const [saved, setSaved] = useState<Workout[]>([]);
 
 
-  // load data after refresh
+
   useEffect(() => {
 
     const savedPlan =
@@ -54,19 +72,21 @@ export function PlanProvider({
       localStorage.getItem("fitlog-saved");
 
 
-    if (savedPlan) {
+    if(savedPlan){
       setPlan(JSON.parse(savedPlan));
     }
 
-    if (savedWorkout) {
+
+    if(savedWorkout){
       setSaved(JSON.parse(savedWorkout));
     }
+
 
   }, []);
 
 
 
-  // save plan
+
   useEffect(() => {
 
     localStorage.setItem(
@@ -78,7 +98,7 @@ export function PlanProvider({
 
 
 
-  // save saved list
+
   useEffect(() => {
 
     localStorage.setItem(
@@ -90,50 +110,62 @@ export function PlanProvider({
 
 
 
-  function addPlan(workout: Workout) {
 
-    if (plan.length >= 5) return;
+
+  function addPlan(workout: Workout){
+
+    if(plan.length >= 5){
+      return;
+    }
 
 
     const exists = plan.find(
-      (item) => item.id === workout.id
+      (item)=> item.id === workout.id
     );
 
 
-    if (!exists) {
+    if(!exists){
+
       setPlan([
         ...plan,
-        workout,
+        workout
       ]);
+
     }
 
   }
 
 
 
-  function saveWorkout(workout: Workout) {
+
+
+  function saveWorkout(workout: Workout){
 
     const exists = saved.find(
-      (item) => item.id === workout.id
+      (item)=> item.id === workout.id
     );
 
 
-    if (!exists) {
+    if(!exists){
+
       setSaved([
         ...saved,
-        workout,
+        workout
       ]);
+
     }
 
   }
 
 
 
-  function removeFromPlan(id: string) {
+
+
+  function removeFromPlan(id:string){
 
     setPlan(
       plan.filter(
-        (item) => item.id !== id
+        (item)=> item.id !== id
       )
     );
 
@@ -141,11 +173,13 @@ export function PlanProvider({
 
 
 
-  function removeFromSaved(id: string) {
+
+
+  function removeFromSaved(id:string){
 
     setSaved(
       saved.filter(
-        (item) => item.id !== id
+        (item)=> item.id !== id
       )
     );
 
@@ -153,26 +187,39 @@ export function PlanProvider({
 
 
 
-  function markAsDone(id: string) {
+
+
+  function markAsDone(id:string){
 
     setPlan(
-      plan.map((item)=>(
+
+      plan.map((item)=>
+
         item.id === id
+
         ? {
-          ...item,
-          isDone: !item.isDone
-        }
+            ...item,
+            isDone: !item.isDone
+          }
+
         : item
-      ))
+
+      )
+
     );
 
   }
+
+
 
 
 
   return (
+
     <PlanContext.Provider
+
       value={{
+
         plan,
         saved,
 
@@ -186,13 +233,21 @@ export function PlanProvider({
         removeFromSaved,
 
         markAsDone,
+
       }}
+
     >
+
       {children}
+
     </PlanContext.Provider>
+
   );
 
 }
+
+
+
 
 
 
@@ -200,11 +255,15 @@ export function usePlan(){
 
   const context = useContext(PlanContext);
 
+
   if(!context){
+
     throw new Error(
       "usePlan must be inside PlanProvider"
     );
+
   }
+
 
   return context;
 
