@@ -14,20 +14,24 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0b0d0c]/95 backdrop-blur">
       <nav className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3">
+
+          {/* Logo + FITLOG */}
           <Link href="/" className="flex items-center gap-3">
             <Image
               src="/logo.png"
               alt="FitLog Logo"
-              width={42}
-              height={42}
-              className="h-10 w-10 object-contain"
+              width={38}
+              height={38}
+              className="h-9 w-9 object-contain"
             />
 
-            <span className="hidden text-xl font-black tracking-wider text-white sm:block">
+            <span className="text-xl font-black tracking-wider text-white">
               FITLOG
             </span>
           </Link>
 
+
+          {/* Desktop Menu */}
           <div className="hidden items-center gap-8 md:flex">
             <Link
               href="/"
@@ -52,6 +56,8 @@ export default function Navbar() {
             </Link>
           </div>
 
+
+          {/* Badges */}
           <div className="flex items-center gap-2">
             <Link
               href="/my-plan"
@@ -71,8 +77,11 @@ export default function Navbar() {
               <span>{savedCount}</span>
             </Link>
           </div>
+
         </div>
 
+
+        {/* Mobile Menu */}
         <div className="mt-4 flex items-center justify-center gap-8 border-t border-white/10 pt-4 md:hidden">
           <Link
             href="/"
@@ -94,6 +103,7 @@ export default function Navbar() {
             My Plan
           </Link>
         </div>
+
       </nav>
     </header>
   );
