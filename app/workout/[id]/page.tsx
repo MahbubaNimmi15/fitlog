@@ -1,71 +1,100 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Dumbbell } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+
+import WorkoutActions from "@/components/WorkoutActions";
 
 
-const workouts = [
-  {
-    id: "1",
-    name: "Bicep Curl",
-    muscle: "Biceps",
-    equipment: "Dumbbell",
-    level: "Beginner",
-    duration: "15",
-    calories: "120",
-    image: "/banner.png",
-    description:
-      "A simple isolation exercise that builds bicep strength and arm size.",
-  },
+type Workout = {
+  id: string;
+  name: string;
 
-  {
-    id: "2",
-    name: "Bench Press",
-    muscle: "Chest",
-    equipment: "Barbell",
-    level: "Intermediate",
-    duration: "25",
-    calories: "250",
-    image: "/banner.png",
-    description:
-      "A compound chest exercise focused on upper body strength.",
-  },
+  image?: string;
+  description?: string;
 
-  {
-    id: "3",
-    name: "Squat",
-    muscle: "Legs",
-    equipment: "Barbell",
-    level: "Advanced",
-    duration: "30",
-    calories: "300",
-    image: "/banner.png",
-    description:
-      "A powerful lower body movement for legs and core strength.",
-  },
-];
+  equipment?: string | string[];
+  category?: string[];
+
+  difficulty?: string;
+  level?: string;
+
+  sets?: number;
+  reps?: string;
+
+  duration?: number;
+  calories?: number;
+  caloriesBurned?: number;
+
+  rating?: number;
+};
+
+
+
+
+async function getWorkout(id: string): Promise<Workout | null> {
+
+  try {
+
+    const res = await fetch(
+      `https://api.abcz.workers.dev/api/fitlog/${id}`,
+      {
+        cache: "no-store",
+      }
+    );
+
+
+    if (!res.ok) {
+      return null;
+    }
+
+
+    const data = await res.json();
+
+    return data;
+
+
+  } catch (error) {
+
+    console.log(error);
+
+    return null;
+
+  }
+
+}
+
+
+
 
 
 export default async function WorkoutDetails({
+
   params,
+
 }: {
+
   params: Promise<{ id: string }>;
+
 }) {
+
 
   const { id } = await params;
 
-  const workout = workouts.find(
-    (item) => item.id === id
-  );
+
+  const workout = await getWorkout(id);
+
 
 
   if (!workout) {
+
     return (
+
       <main className="min-h-screen bg-[#0b0d0c] p-10 text-white">
+
         <h1 className="text-3xl font-black">
           Workout Not Found
         </h1>
+
 
         <Link
           href="/"
@@ -73,105 +102,301 @@ export default async function WorkoutDetails({
         >
           Go Back
         </Link>
+
+
       </main>
+
     );
+
   }
 
 
+
+
+  const equipment = Array.isArray(workout.equipment)
+
+    ? workout.equipment.join(", ")
+
+    : workout.equipment || "Not specified";
+
+
+
+
+  const calories =
+    workout.calories ||
+    workout.caloriesBurned ||
+    0;
+
+
+
+
+
   return (
+
     <main className="min-h-screen bg-[#0b0d0c] px-4 py-16 text-white sm:px-6 lg:px-8">
+
 
       <div className="mx-auto max-w-6xl">
 
+
+
         <Link
+
           href="/"
+
           className="flex items-center gap-2 text-sm text-gray-400 hover:text-[#ccff00]"
+
         >
+
           <ArrowLeft size={16}/>
+
           Back
+
         </Link>
+
+
+
+
 
 
         <div className="mt-8 grid gap-10 lg:grid-cols-2">
 
 
-          <div className="relative h-[450px] overflow-hidden rounded-2xl border border-white/10">
+
+
+
+          {/* IMAGE */}
+
+          <div className="relative h-[450px] overflow-hidden rounded-2xl border border-white/10 bg-[#151816]">
+
 
             <Image
-              src={workout.image}
+
+              src={workout.image || "/banner.png"}
+
               alt={workout.name}
+
               fill
+
               className="object-cover"
+
             />
 
+
           </div>
+
+
+
+
+
+
+
+          {/* DETAILS */}
 
 
           <div>
 
-            <p className="text-sm font-bold uppercase tracking-widest text-[#ccff00]">
-              {workout.level}
-            </p>
 
 
-            <h1 className="mt-3 text-5xl font-black uppercase">
-              {workout.name}
-            </h1>
+
+            <div className="flex flex-wrap gap-2">
 
 
-            <p className="mt-5 text-gray-400">
-              {workout.description}
-            </p>
+              {workout.category?.map((item)=>(
 
+                <span
 
-            <div className="mt-8 grid grid-cols-2 gap-4">
+                  key={item}
 
-              <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-gray-400">Muscle</p>
-                <p className="mt-2 font-black">
-                  {workout.muscle}
-                </p>
-              </div>
+                  className="rounded-full bg-[#ccff00] px-3 py-1 text-xs font-black text-black"
 
+                >
 
-              <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-gray-400">Equipment</p>
-                <p className="mt-2 font-black">
-                  {workout.equipment}
-                </p>
-              </div>
+                  {item}
 
+                </span>
 
-              <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-gray-400">Duration</p>
-                <p className="mt-2 font-black">
-                  {workout.duration} min
-                </p>
-              </div>
+              ))}
 
-
-              <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-gray-400">Calories</p>
-                <p className="mt-2 font-black">
-                  {workout.calories} kcal
-                </p>
-              </div>
 
             </div>
 
 
-            <button className="mt-8 flex w-full items-center justify-center gap-2 rounded-md bg-[#ccff00] py-4 font-black uppercase text-black">
-              <Dumbbell size={18}/>
-              Start Workout
-            </button>
+
+
+
+
+
+            <p className="mt-5 text-sm font-bold uppercase tracking-widest text-[#ccff00]">
+
+              {workout.level || workout.difficulty}
+
+            </p>
+
+
+
+
+
+
+
+            <h1 className="mt-3 text-5xl font-black uppercase">
+
+              {workout.name}
+
+            </h1>
+
+
+
+
+
+
+
+            <p className="mt-5 text-gray-400">
+
+              {workout.description}
+
+            </p>
+
+
+
+
+
+
+
+            <div className="mt-8 grid grid-cols-2 gap-4">
+
+
+
+
+
+              <div className="rounded-xl bg-[#151816] p-5">
+
+                <p className="text-gray-400">
+                  Equipment
+                </p>
+
+                <p className="mt-2 font-black">
+                  {equipment}
+                </p>
+
+              </div>
+
+
+
+
+
+
+              <div className="rounded-xl bg-[#151816] p-5">
+
+                <p className="text-gray-400">
+                  Difficulty
+                </p>
+
+                <p className="mt-2 font-black">
+                  {workout.level || workout.difficulty}
+                </p>
+
+              </div>
+
+
+
+
+
+
+              <div className="rounded-xl bg-[#151816] p-5">
+
+                <p className="text-gray-400">
+                  Sets / Reps
+                </p>
+
+                <p className="mt-2 font-black">
+                  {workout.sets} / {workout.reps}
+                </p>
+
+              </div>
+
+
+
+
+
+
+              <div className="rounded-xl bg-[#151816] p-5">
+
+                <p className="text-gray-400">
+                  Duration
+                </p>
+
+                <p className="mt-2 font-black">
+                  {workout.duration} min
+                </p>
+
+              </div>
+
+
+
+
+
+
+              <div className="rounded-xl bg-[#151816] p-5">
+
+                <p className="text-gray-400">
+                  Calories
+                </p>
+
+                <p className="mt-2 font-black">
+                  {calories} kcal
+                </p>
+
+              </div>
+
+
+
+
+
+
+              <div className="rounded-xl bg-[#151816] p-5">
+
+                <p className="text-gray-400">
+                  Rating
+                </p>
+
+                <p className="mt-2 font-black">
+                  {workout.rating}
+                </p>
+
+              </div>
+
+
+
+            </div>
+
+
+
+
+
+
+            <WorkoutActions workout={workout} />
+
+
+
 
 
           </div>
 
+
+
+
         </div>
+
+
+
 
       </div>
 
+
+
     </main>
+
   );
+
 }
