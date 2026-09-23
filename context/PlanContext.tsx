@@ -5,149 +5,207 @@ import {
   useContext,
   useEffect,
   useState,
-  ReactNode,
 } from "react";
 
 export type Workout = {
-  id: number | string;
+  id: string;
   name: string;
-  image: string;
-  muscleGroups?: string[];
-  equipment?: string | string[];
-  difficulty?: string;
-  duration: number;
-  caloriesBurned: number;
-  sets?: number | string;
-  reps?: string;
-  rating: number;
-  description?: string;
-  instructions?: string[];
+  muscle: string;
+  level: string;
   isDone?: boolean;
 };
 
 type PlanContextType = {
   plan: Workout[];
   saved: Workout[];
-  addToPlan: (workout: Workout) => boolean;
-  saveWorkout: (workout: Workout) => boolean;
-  removeFromPlan: (id: number | string) => void;
-  removeFromSaved: (id: number | string) => void;
-  markAsDone: (id: number | string) => void;
+
   planCount: number;
   savedCount: number;
-  isLoaded: boolean;
+
+  addPlan: (workout: Workout) => void;
+  saveWorkout: (workout: Workout) => void;
+
+  removeFromPlan: (id: string) => void;
+  removeFromSaved: (id: string) => void;
+
+  markAsDone: (id: string) => void;
 };
 
-const PlanContext = createContext<PlanContextType | undefined>(undefined);
+const PlanContext = createContext<PlanContextType | null>(null);
 
-export function PlanProvider({ children }: { children: ReactNode }) {
+
+export function PlanProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+
   const [plan, setPlan] = useState<Workout[]>([]);
   const [saved, setSaved] = useState<Workout[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
 
+
+  // load data after refresh
   useEffect(() => {
-    try {
-      const storedPlan = localStorage.getItem("fitlog-plan");
-      const storedSaved = localStorage.getItem("fitlog-saved");
 
-      if (storedPlan) {
-        setPlan(JSON.parse(storedPlan));
-      }
+    const savedPlan =
+      localStorage.getItem("fitlog-plan");
 
-      if (storedSaved) {
-        setSaved(JSON.parse(storedSaved));
-      }
-    } catch (error) {
-      console.error("Failed to load FitLog data:", error);
-    } finally {
-      setIsLoaded(true);
+    const savedWorkout =
+      localStorage.getItem("fitlog-saved");
+
+
+    if (savedPlan) {
+      setPlan(JSON.parse(savedPlan));
     }
+
+    if (savedWorkout) {
+      setSaved(JSON.parse(savedWorkout));
+    }
+
   }, []);
 
+
+
+  // save plan
   useEffect(() => {
-    if (!isLoaded) return;
 
-    localStorage.setItem("fitlog-plan", JSON.stringify(plan));
-  }, [plan, isLoaded]);
+    localStorage.setItem(
+      "fitlog-plan",
+      JSON.stringify(plan)
+    );
 
+  }, [plan]);
+
+
+
+  // save saved list
   useEffect(() => {
-    if (!isLoaded) return;
 
-    localStorage.setItem("fitlog-saved", JSON.stringify(saved));
-  }, [saved, isLoaded]);
+    localStorage.setItem(
+      "fitlog-saved",
+      JSON.stringify(saved)
+    );
 
-  const addToPlan = (workout: Workout) => {
-    const alreadyAdded = plan.some((item) => item.id === workout.id);
+  }, [saved]);
 
-    if (alreadyAdded) {
-      return false;
+
+
+  function addPlan(workout: Workout) {
+
+    if (plan.length >= 5) return;
+
+
+    const exists = plan.find(
+      (item) => item.id === workout.id
+    );
+
+
+    if (!exists) {
+      setPlan([
+        ...plan,
+        workout,
+      ]);
     }
 
-    if (plan.length >= 5) {
-      return false;
+  }
+
+
+
+  function saveWorkout(workout: Workout) {
+
+    const exists = saved.find(
+      (item) => item.id === workout.id
+    );
+
+
+    if (!exists) {
+      setSaved([
+        ...saved,
+        workout,
+      ]);
     }
 
-    setPlan((prev) => [...prev, { ...workout, isDone: false }]);
+  }
 
-    return true;
-  };
 
-  const saveWorkout = (workout: Workout) => {
-    const alreadySaved = saved.some((item) => item.id === workout.id);
 
-    if (alreadySaved) {
-      return false;
-    }
+  function removeFromPlan(id: string) {
 
-    setSaved((prev) => [...prev, workout]);
-
-    return true;
-  };
-
-  const removeFromPlan = (id: number | string) => {
-    setPlan((prev) => prev.filter((workout) => workout.id !== id));
-  };
-
-  const removeFromSaved = (id: number | string) => {
-    setSaved((prev) => prev.filter((workout) => workout.id !== id));
-  };
-
-  const markAsDone = (id: number | string) => {
-    setPlan((prev) =>
-      prev.map((workout) =>
-        workout.id === id
-          ? { ...workout, isDone: !workout.isDone }
-          : workout
+    setPlan(
+      plan.filter(
+        (item) => item.id !== id
       )
     );
-  };
+
+  }
+
+
+
+  function removeFromSaved(id: string) {
+
+    setSaved(
+      saved.filter(
+        (item) => item.id !== id
+      )
+    );
+
+  }
+
+
+
+  function markAsDone(id: string) {
+
+    setPlan(
+      plan.map((item)=>(
+        item.id === id
+        ? {
+          ...item,
+          isDone: !item.isDone
+        }
+        : item
+      ))
+    );
+
+  }
+
+
 
   return (
     <PlanContext.Provider
       value={{
         plan,
         saved,
-        addToPlan,
-        saveWorkout,
-        removeFromPlan,
-        removeFromSaved,
-        markAsDone,
+
         planCount: plan.length,
         savedCount: saved.length,
-        isLoaded,
+
+        addPlan,
+        saveWorkout,
+
+        removeFromPlan,
+        removeFromSaved,
+
+        markAsDone,
       }}
     >
       {children}
     </PlanContext.Provider>
   );
+
 }
 
-export function usePlan() {
+
+
+export function usePlan(){
+
   const context = useContext(PlanContext);
 
-  if (!context) {
-    throw new Error("usePlan must be used inside PlanProvider");
+  if(!context){
+    throw new Error(
+      "usePlan must be inside PlanProvider"
+    );
   }
 
   return context;
+
 }
