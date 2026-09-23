@@ -33,9 +33,11 @@ export default function Hero() {
           <div className="absolute h-[330px] w-[330px] rounded-full bg-[#ccff00]/10 blur-3xl sm:h-[430px] sm:w-[430px]" />
 
           <div className="relative flex min-h-[400px] w-full items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#111412] sm:min-h-[500px]">
-            <p className="text-center text-sm uppercase tracking-[0.25em] text-gray-600">
-              Hero Image
-            </p>
+            <img
+              src="/banner.png"
+              alt="FitLog Workout Banner"
+              className="h-full w-full object-contain"
+            />
           </div>
         </div>
       </div>
