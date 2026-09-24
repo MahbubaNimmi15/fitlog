@@ -13,41 +13,62 @@ export type Workout = {
   name: string;
 
   muscle?: string;
+
+  equipment?: string | string[];
+
   level?: string;
+  difficulty?: string;
 
-  equipment?: string;
   image?: string;
-
-  duration?: string;
-  caloriesBurned?: number;
-
-  calories?: string;
-  rating?: number;
+  description?: string;
 
   category?: string[];
+
+  sets?: number;
+  reps?: string;
+
+  duration?: number | string;
+
+  calories?: number | string;
+  caloriesBurned?: number;
+
+  rating?: number;
 
   isDone?: boolean;
 };
 
 
+
 type PlanContextType = {
+
   plan: Workout[];
+
   saved: Workout[];
 
   planCount: number;
+
   savedCount: number;
 
+
   addPlan: (workout: Workout) => void;
+
   saveWorkout: (workout: Workout) => void;
 
+
   removeFromPlan: (id: string) => void;
+
   removeFromSaved: (id: string) => void;
 
+
   markAsDone: (id: string) => void;
+
 };
 
 
+
 const PlanContext = createContext<PlanContextType | null>(null);
+
+
 
 
 
@@ -58,28 +79,42 @@ export function PlanProvider({
 }) {
 
 
+
   const [plan, setPlan] = useState<Workout[]>([]);
+
   const [saved, setSaved] = useState<Workout[]>([]);
+
+
+
 
 
 
   useEffect(() => {
 
+
     const savedPlan =
       localStorage.getItem("fitlog-plan");
+
 
     const savedWorkout =
       localStorage.getItem("fitlog-saved");
 
 
+
     if(savedPlan){
+
       setPlan(JSON.parse(savedPlan));
+
     }
+
 
 
     if(savedWorkout){
+
       setSaved(JSON.parse(savedWorkout));
+
     }
+
 
 
   }, []);
@@ -87,26 +122,37 @@ export function PlanProvider({
 
 
 
-  useEffect(() => {
+
+
+
+  useEffect(()=>{
+
 
     localStorage.setItem(
       "fitlog-plan",
       JSON.stringify(plan)
     );
 
-  }, [plan]);
+
+  },[plan]);
 
 
 
 
-  useEffect(() => {
+
+
+  useEffect(()=>{
+
 
     localStorage.setItem(
       "fitlog-saved",
       JSON.stringify(saved)
     );
 
-  }, [saved]);
+
+  },[saved]);
+
+
 
 
 
@@ -114,26 +160,39 @@ export function PlanProvider({
 
   function addPlan(workout: Workout){
 
+
     if(plan.length >= 5){
+
       return;
+
     }
 
 
+
     const exists = plan.find(
-      (item)=> item.id === workout.id
+      (item)=>item.id === workout.id
     );
+
 
 
     if(!exists){
 
+
       setPlan([
+
         ...plan,
+
         workout
+
       ]);
+
 
     }
 
+
   }
+
+
 
 
 
@@ -141,21 +200,32 @@ export function PlanProvider({
 
   function saveWorkout(workout: Workout){
 
+
     const exists = saved.find(
-      (item)=> item.id === workout.id
+      (item)=>item.id === workout.id
     );
+
 
 
     if(!exists){
 
+
       setSaved([
+
         ...saved,
+
         workout
+
       ]);
+
 
     }
 
+
   }
+
+
+
 
 
 
@@ -163,13 +233,20 @@ export function PlanProvider({
 
   function removeFromPlan(id:string){
 
+
     setPlan(
+
       plan.filter(
-        (item)=> item.id !== id
+        (item)=>item.id !== id
       )
+
     );
 
+
   }
+
+
+
 
 
 
@@ -177,13 +254,20 @@ export function PlanProvider({
 
   function removeFromSaved(id:string){
 
+
     setSaved(
+
       saved.filter(
-        (item)=> item.id !== id
+        (item)=>item.id !== id
       )
+
     );
 
+
   }
+
+
+
 
 
 
@@ -191,24 +275,40 @@ export function PlanProvider({
 
   function markAsDone(id:string){
 
+
     setPlan(
 
-      plan.map((item)=>
+      plan.map((item)=>(
+
 
         item.id === id
 
-        ? {
-            ...item,
-            isDone: !item.isDone
-          }
+        ?
 
-        : item
+        {
 
-      )
+          ...item,
+
+          isDone: !item.isDone
+
+        }
+
+
+        :
+
+        item
+
+
+      ))
+
 
     );
 
+
   }
+
+
+
 
 
 
@@ -221,18 +321,27 @@ export function PlanProvider({
       value={{
 
         plan,
+
         saved,
 
+
         planCount: plan.length,
+
         savedCount: saved.length,
 
+
         addPlan,
+
         saveWorkout,
 
+
         removeFromPlan,
+
         removeFromSaved,
 
+
         markAsDone,
+
 
       }}
 
@@ -244,7 +353,9 @@ export function PlanProvider({
 
   );
 
+
 }
+
 
 
 
@@ -253,18 +364,24 @@ export function PlanProvider({
 
 export function usePlan(){
 
+
   const context = useContext(PlanContext);
 
 
+
   if(!context){
+
 
     throw new Error(
       "usePlan must be inside PlanProvider"
     );
 
+
   }
 
 
+
   return context;
+
 
 }
