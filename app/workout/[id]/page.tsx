@@ -30,7 +30,6 @@ type Workout = {
 
 
 
-
 async function getWorkout(id: string): Promise<Workout | null> {
 
   try {
@@ -48,9 +47,7 @@ async function getWorkout(id: string): Promise<Workout | null> {
     }
 
 
-    const data = await res.json();
-
-    return data;
+    return await res.json();
 
 
   } catch (error) {
@@ -62,7 +59,6 @@ async function getWorkout(id: string): Promise<Workout | null> {
   }
 
 }
-
 
 
 
@@ -103,13 +99,11 @@ export default async function WorkoutDetails({
           Go Back
         </Link>
 
-
       </main>
 
     );
 
   }
-
 
 
 
@@ -121,12 +115,10 @@ export default async function WorkoutDetails({
 
 
 
-
   const calories =
     workout.calories ||
     workout.caloriesBurned ||
     0;
-
 
 
 
@@ -137,7 +129,6 @@ export default async function WorkoutDetails({
 
 
       <div className="mx-auto max-w-6xl">
-
 
 
         <Link
@@ -157,18 +148,13 @@ export default async function WorkoutDetails({
 
 
 
-
-
         <div className="mt-8 grid gap-10 lg:grid-cols-2">
-
-
 
 
 
           {/* IMAGE */}
 
           <div className="relative h-[450px] overflow-hidden rounded-2xl border border-white/10 bg-[#151816]">
-
 
             <Image
 
@@ -182,9 +168,7 @@ export default async function WorkoutDetails({
 
             />
 
-
           </div>
-
 
 
 
@@ -197,10 +181,7 @@ export default async function WorkoutDetails({
           <div>
 
 
-
-
             <div className="flex flex-wrap gap-2">
-
 
               {workout.category?.map((item)=>(
 
@@ -218,10 +199,7 @@ export default async function WorkoutDetails({
 
               ))}
 
-
             </div>
-
-
 
 
 
@@ -237,15 +215,11 @@ export default async function WorkoutDetails({
 
 
 
-
-
             <h1 className="mt-3 text-5xl font-black uppercase">
 
               {workout.name}
 
             </h1>
-
-
 
 
 
@@ -261,111 +235,108 @@ export default async function WorkoutDetails({
 
 
 
-
-
             <div className="mt-8 grid grid-cols-2 gap-4">
 
 
-
-
-
               <div className="rounded-xl bg-[#151816] p-5">
-
-                <p className="text-gray-400">
-                  Equipment
-                </p>
-
-                <p className="mt-2 font-black">
-                  {equipment}
-                </p>
-
+                <p className="text-gray-400">Equipment</p>
+                <p className="mt-2 font-black">{equipment}</p>
               </div>
 
 
-
-
-
-
               <div className="rounded-xl bg-[#151816] p-5">
-
-                <p className="text-gray-400">
-                  Difficulty
-                </p>
-
+                <p className="text-gray-400">Difficulty</p>
                 <p className="mt-2 font-black">
                   {workout.level || workout.difficulty}
                 </p>
-
               </div>
 
 
-
-
-
-
               <div className="rounded-xl bg-[#151816] p-5">
-
-                <p className="text-gray-400">
-                  Sets / Reps
-                </p>
-
+                <p className="text-gray-400">Sets / Reps</p>
                 <p className="mt-2 font-black">
                   {workout.sets} / {workout.reps}
                 </p>
-
               </div>
 
 
-
-
-
-
               <div className="rounded-xl bg-[#151816] p-5">
-
-                <p className="text-gray-400">
-                  Duration
-                </p>
-
+                <p className="text-gray-400">Duration</p>
                 <p className="mt-2 font-black">
                   {workout.duration} min
                 </p>
-
               </div>
 
 
-
-
-
-
               <div className="rounded-xl bg-[#151816] p-5">
-
-                <p className="text-gray-400">
-                  Calories
-                </p>
-
+                <p className="text-gray-400">Calories</p>
                 <p className="mt-2 font-black">
                   {calories} kcal
                 </p>
-
               </div>
-
-
-
-
 
 
               <div className="rounded-xl bg-[#151816] p-5">
-
-                <p className="text-gray-400">
-                  Rating
-                </p>
-
+                <p className="text-gray-400">Rating</p>
                 <p className="mt-2 font-black">
                   {workout.rating}
                 </p>
-
               </div>
 
+
+            </div>
+
+
+
+
+
+
+            {/* INSTRUCTIONS */}
+
+            <div className="mt-8 rounded-xl border border-white/10 bg-[#151816] p-6">
+
+
+              <h2 className="text-2xl font-black uppercase">
+                Instructions
+              </h2>
+
+
+              <ol className="mt-5 space-y-4 text-gray-300">
+
+
+                <li>
+                  <span className="mr-2 font-black text-[#ccff00]">
+                    1.
+                  </span>
+                  Prepare your body and maintain proper posture before starting the exercise.
+                </li>
+
+
+                <li>
+                  <span className="mr-2 font-black text-[#ccff00]">
+                    2.
+                  </span>
+                  Perform the movement with controlled technique and proper form.
+                </li>
+
+
+                <li>
+                  <span className="mr-2 font-black text-[#ccff00]">
+                    3.
+                  </span>
+                  Maintain correct breathing and complete each repetition safely.
+                </li>
+
+
+                <li>
+                  <span className="mr-2 font-black text-[#ccff00]">
+                    4.
+                  </span>
+                  Return slowly to the starting position and finish the set.
+                </li>
+
+
+              </ol>
 
 
             </div>
@@ -378,21 +349,13 @@ export default async function WorkoutDetails({
             <WorkoutActions workout={workout} />
 
 
-
-
-
           </div>
-
-
 
 
         </div>
 
 
-
-
       </div>
-
 
 
     </main>
