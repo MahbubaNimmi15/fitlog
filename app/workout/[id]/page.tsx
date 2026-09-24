@@ -42,7 +42,7 @@ async function getWorkout(id: string): Promise<Workout | null> {
     );
 
 
-    if (!res.ok) {
+    if(!res.ok){
       return null;
     }
 
@@ -50,7 +50,7 @@ async function getWorkout(id: string): Promise<Workout | null> {
     return await res.json();
 
 
-  } catch (error) {
+  } catch(error){
 
     console.log(error);
 
@@ -67,21 +67,21 @@ export default async function WorkoutDetails({
 
   params,
 
-}: {
+}:{
 
-  params: Promise<{ id: string }>;
+  params: Promise<{id:string}>;
 
 }) {
 
 
-  const { id } = await params;
+  const {id} = await params;
 
 
   const workout = await getWorkout(id);
 
 
 
-  if (!workout) {
+  if(!workout){
 
     return (
 
@@ -98,6 +98,7 @@ export default async function WorkoutDetails({
         >
           Go Back
         </Link>
+
 
       </main>
 
@@ -123,243 +124,344 @@ export default async function WorkoutDetails({
 
 
 
-  return (
+return (
 
-    <main className="min-h-screen bg-[#0b0d0c] px-4 py-16 text-white sm:px-6 lg:px-8">
+<main className="min-h-screen bg-[#0b0d0c] px-4 py-16 text-white sm:px-6 lg:px-8">
 
 
-      <div className="mx-auto max-w-6xl">
+<div className="mx-auto max-w-6xl">
 
 
-        <Link
+<Link
+href="/"
+className="flex items-center gap-2 text-sm text-gray-400 hover:text-[#ccff00]"
+>
 
-          href="/"
+<ArrowLeft size={16}/>
 
-          className="flex items-center gap-2 text-sm text-gray-400 hover:text-[#ccff00]"
+Back
 
-        >
+</Link>
 
-          <ArrowLeft size={16}/>
 
-          Back
 
-        </Link>
+<div className="mt-8 grid gap-10 lg:grid-cols-2">
 
 
 
+{/* IMAGE */}
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-2">
+<div className="relative h-[450px] overflow-hidden rounded-2xl border border-white/10 bg-[#151816]">
 
 
+<Image
 
-          {/* IMAGE */}
+src={workout.image || "/banner.png"}
 
-          <div className="relative h-[450px] overflow-hidden rounded-2xl border border-white/10 bg-[#151816]">
+alt={workout.name}
 
-            <Image
+fill
 
-              src={workout.image || "/banner.png"}
+className="object-cover"
 
-              alt={workout.name}
+/>
 
-              fill
 
-              className="object-cover"
+</div>
 
-            />
 
-          </div>
 
 
 
+{/* DETAILS */}
 
 
+<div>
 
-          {/* DETAILS */}
 
+<div className="flex flex-wrap gap-2">
 
-          <div>
+{workout.category?.map((item)=>(
 
+<span
+key={item}
+className="rounded-full bg-[#ccff00] px-3 py-1 text-xs font-black text-black"
+>
 
-            <div className="flex flex-wrap gap-2">
+{item}
 
-              {workout.category?.map((item)=>(
+</span>
 
-                <span
+))}
 
-                  key={item}
 
-                  className="rounded-full bg-[#ccff00] px-3 py-1 text-xs font-black text-black"
+</div>
 
-                >
 
-                  {item}
 
-                </span>
+<p className="mt-5 text-sm font-bold uppercase tracking-widest text-[#ccff00]">
 
-              ))}
+{workout.level || workout.difficulty}
 
-            </div>
+</p>
 
 
 
+<h1 className="mt-3 text-5xl font-black uppercase">
 
+{workout.name}
 
-            <p className="mt-5 text-sm font-bold uppercase tracking-widest text-[#ccff00]">
+</h1>
 
-              {workout.level || workout.difficulty}
 
-            </p>
 
+<p className="mt-5 text-gray-400">
 
+{workout.description}
 
+</p>
 
 
-            <h1 className="mt-3 text-5xl font-black uppercase">
 
-              {workout.name}
 
-            </h1>
 
+<div className="mt-8 overflow-hidden rounded-xl border border-white/10 bg-[#151816]">
 
 
+<div className="grid grid-cols-2 border-b border-white/10 p-5">
 
+<span className="text-gray-400 uppercase">
+Equipment
+</span>
 
-            <p className="mt-5 text-gray-400">
+<span className="font-black">
+{equipment}
+</span>
 
-              {workout.description}
+</div>
 
-            </p>
 
 
+<div className="grid grid-cols-2 border-b border-white/10 p-5">
 
+<span className="text-gray-400 uppercase">
+Difficulty
+</span>
 
+<span className="font-black">
+{workout.level || workout.difficulty}
+</span>
 
-            <div className="mt-8 grid grid-cols-2 gap-4">
+</div>
 
 
-              <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-gray-400">Equipment</p>
-                <p className="mt-2 font-black">{equipment}</p>
-              </div>
 
+<div className="grid grid-cols-2 border-b border-white/10 p-5">
 
-              <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-gray-400">Difficulty</p>
-                <p className="mt-2 font-black">
-                  {workout.level || workout.difficulty}
-                </p>
-              </div>
+<span className="text-gray-400 uppercase">
+Sets
+</span>
 
+<span className="font-black">
+{workout.sets}
+</span>
 
-              <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-gray-400">Sets / Reps</p>
-                <p className="mt-2 font-black">
-                  {workout.sets} / {workout.reps}
-                </p>
-              </div>
+</div>
 
 
-              <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-gray-400">Duration</p>
-                <p className="mt-2 font-black">
-                  {workout.duration} min
-                </p>
-              </div>
 
+<div className="grid grid-cols-2 border-b border-white/10 p-5">
 
-              <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-gray-400">Calories</p>
-                <p className="mt-2 font-black">
-                  {calories} kcal
-                </p>
-              </div>
+<span className="text-gray-400 uppercase">
+Reps
+</span>
 
+<span className="font-black">
+{workout.reps}
+</span>
 
-              <div className="rounded-xl bg-[#151816] p-5">
-                <p className="text-gray-400">Rating</p>
-                <p className="mt-2 font-black">
-                  {workout.rating}
-                </p>
-              </div>
+</div>
 
 
-            </div>
 
+<div className="grid grid-cols-2 border-b border-white/10 p-5">
 
+<span className="text-gray-400 uppercase">
+Duration
+</span>
 
+<span className="font-black">
+{workout.duration} min
+</span>
 
+</div>
 
 
-            {/* INSTRUCTIONS */}
 
-            <div className="mt-8 rounded-xl border border-white/10 bg-[#151816] p-6">
+<div className="grid grid-cols-2 border-b border-white/10 p-5">
 
+<span className="text-gray-400 uppercase">
+Calories
+</span>
 
-              <h2 className="text-2xl font-black uppercase">
-                Instructions
-              </h2>
+<span className="font-black">
+{calories} kcal
+</span>
 
+</div>
 
-              <ol className="mt-5 space-y-4 text-gray-300">
 
 
-                <li>
-                  <span className="mr-2 font-black text-[#ccff00]">
-                    1.
-                  </span>
-                  Prepare your body and maintain proper posture before starting the exercise.
-                </li>
+<div className="grid grid-cols-2 p-5">
 
+<span className="text-gray-400 uppercase">
+Rating
+</span>
 
-                <li>
-                  <span className="mr-2 font-black text-[#ccff00]">
-                    2.
-                  </span>
-                  Perform the movement with controlled technique and proper form.
-                </li>
+<span className="font-black">
+{workout.rating}
+</span>
 
+</div>
 
-                <li>
-                  <span className="mr-2 font-black text-[#ccff00]">
-                    3.
-                  </span>
-                  Maintain correct breathing and complete each repetition safely.
-                </li>
 
+</div>
+{/* INSTRUCTIONS */}
 
-                <li>
-                  <span className="mr-2 font-black text-[#ccff00]">
-                    4.
-                  </span>
-                  Return slowly to the starting position and finish the set.
-                </li>
+<div className="mt-8">
 
 
-              </ol>
+<h2 className="mb-5 text-2xl font-black uppercase">
+  Instructions
+</h2>
 
 
-            </div>
 
+<div className="space-y-4">
 
 
 
+<div className="flex gap-4 rounded-xl border border-white/10 bg-[#151816] p-5">
 
 
-            <WorkoutActions workout={workout} />
+<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ccff00] font-black text-black">
 
+1
 
-          </div>
+</div>
 
 
-        </div>
+<p className="text-gray-300">
 
+Set up your position correctly and maintain proper posture before starting the exercise.
 
-      </div>
+</p>
 
 
-    </main>
+</div>
 
-  );
+
+
+
+
+<div className="flex gap-4 rounded-xl border border-white/10 bg-[#151816] p-5">
+
+
+<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ccff00] font-black text-black">
+
+2
+
+</div>
+
+
+<p className="text-gray-300">
+
+Perform the movement with controlled technique and focus on proper form.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div className="flex gap-4 rounded-xl border border-white/10 bg-[#151816] p-5">
+
+
+<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ccff00] font-black text-black">
+
+3
+
+</div>
+
+
+<p className="text-gray-300">
+
+Keep correct breathing and complete each repetition safely.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div className="flex gap-4 rounded-xl border border-white/10 bg-[#151816] p-5">
+
+
+<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ccff00] font-black text-black">
+
+4
+
+</div>
+
+
+<p className="text-gray-300">
+
+Return slowly to the starting position and finish the set properly.
+
+</p>
+
+
+</div>
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+{/* ACTION BUTTONS */}
+
+<WorkoutActions workout={workout} />
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</main>
+
+
+);
 
 }
